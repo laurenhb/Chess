@@ -1,6 +1,8 @@
 var _boardStateArray = [];
 var _cellsToPaint = [];
-var uCode = {
+var _pieceEnRouteObject = {};
+var _pieceEnRouteHTML;
+var _uCode = {
     wPawn: String.fromCharCode(parseInt(2659, 16)),
     wRook: String.fromCharCode(parseInt(2656, 16)),
     wKnight: String.fromCharCode(parseInt(2658, 16)),
@@ -24,124 +26,125 @@ function setUp() {
            cellId.setAttribute('id', i + '' + j);
            var cellObject = {
                id: i + '' + j,
-            //    status: 'none',
+            //    cellStatus: 'none',
            };
            rowArray.push(cellObject);
            if (i === 1){ //black pawns
-               cellId.innerHTML = uCode.bPawn;
-               cellObject.pieceType = 'pawn';
-               cellObject.pieceColor = 'black';
-            //    cellObject.cellStatus = 'piece';
-               cellObject.firstMove = true;
+            //    cellId.innerHTML = _uCode.bPawn;
+            //    cellObject.pieceType = 'pawn';
+            //    cellObject.pieceColor = 'black';
+            // //    cellObject.cellStatus = 'piece';
+            //    cellObject.firstMove = true;
                cellId.addEventListener("click", function (event){
                    console.log(event);
-                   determinePiece(event.target.id);
+                   movePiece(event.target.id);
                    });
+             document.getElementById(i + '' + j).innerHTML = i + '' + j; //print cell numbers
            } else if (i === 6){ //white pawns
-               cellId.innerHTML = uCode.wPawn;
+               cellId.innerHTML = _uCode.wPawn;
                cellObject.pieceType = 'pawn';
                cellObject.pieceColor = 'white';
             //    cellObject.cellStatus = 'piece';
                cellObject.firstMove = true;
                cellId.addEventListener("click", function (event){
                    console.log(event);
-                   determinePiece(event.target.id);
+                   movePiece(event.target.id);
                    });
            } else if ((i === 0 && j === 0) || (i === 0 && j === 7)){ //black rooks
-               cellId.innerHTML = uCode.bRook;
+               cellId.innerHTML = _uCode.bRook;
                cellObject.pieceType = 'rook';
                cellObject.pieceColor = 'black';
             //    cellObject.cellStatus = 'piece';
                cellId.addEventListener("click", function (event){
                    console.log(event);
-                   determinePiece(event.target.id);
+                   movePiece(event.target.id);
                    });
            } else if ((i === 7 && j === 0) || (i === 7 && j === 7)){ //white rooks
-               cellId.innerHTML = uCode.wRook;
+               cellId.innerHTML = _uCode.wRook;
                cellObject.pieceType = 'rook';
                cellObject.pieceColor = 'white';
             //    cellObject.cellStatus = 'piece';
                cellId.addEventListener("click", function (event){
                    console.log(event);
-                   determinePiece(event.target.id);
+                   movePiece(event.target.id);
                    });
            } else if ((i === 0 && j === 2) || (i === 0 && j === 5)){ //black bishops
-               cellId.innerHTML = uCode.bBishop;
+               cellId.innerHTML = _uCode.bBishop;
                cellObject.pieceType = 'bishop';
                cellObject.pieceColor = 'black';
             //    cellObject.cellStatus = 'piece';
                cellId.addEventListener("click", function (event){
                    console.log(event);
-                   determinePiece(event.target.id);
+                   movePiece(event.target.id);
                    });
            } else if ((i === 7 && j === 2) || (i === 7 && j === 5)){ //white bishops
-               cellId.innerHTML = uCode.wBishop;
+               cellId.innerHTML = _uCode.wBishop;
                cellObject.pieceType = 'bishop';
                cellObject.pieceColor = 'white';
             //    cellObject.cellStatus = 'piece';
                cellId.addEventListener("click", function (event){
                    console.log(event);
-                   determinePiece(event.target.id);
+                   movePiece(event.target.id);
                    });
            } else if ((i === 0 && j === 1) || (i === 0 && j === 6)){ //black knights
-               cellId.innerHTML = uCode.bKnight;
+               cellId.innerHTML = _uCode.bKnight;
                cellObject.pieceType = 'knight';
                cellObject.pieceColor = 'black';
             //    cellObject.cellStatus = 'piece';
                cellId.addEventListener("click", function (event){
                    console.log(event);
-                   determinePiece(event.target.id);
+                   movePiece(event.target.id);
                    });
            } else if ((i === 7 && j === 1) || (i === 7 && j === 6)){ //white knights
-               cellId.innerHTML = uCode.wKnight;
+               cellId.innerHTML = _uCode.wKnight;
                cellObject.pieceType = 'knight';
                cellObject.pieceColor = 'white';
             //    cellObject.cellStatus = 'piece';
                cellId.addEventListener("click", function (event){
                    console.log(event);
-                   determinePiece(event.target.id);
+                   movePiece(event.target.id);
                    });
            } else if (i === 0 && j === 4){ //black king
-               cellId.innerHTML = uCode.bKing;
+               cellId.innerHTML = _uCode.bKing;
                cellObject.pieceType = 'king';
                cellObject.pieceColor = 'black';
             //    cellObject.cellStatus = 'piece';
                cellId.addEventListener("click", function (event){
                    console.log(event);
-                   determinePiece(event.target.id);
+                   movePiece(event.target.id);
                    });
            } else if (i === 7 && j === 4){ //white king
-               cellId.innerHTML = uCode.wKing;
+               cellId.innerHTML = _uCode.wKing;
                cellObject.pieceType = 'king';
                cellObject.pieceColor = 'white';
             //    cellObject.cellStatus = 'piece';
                cellId.addEventListener("click", function (event){
                    console.log(event);
-                   determinePiece(event.target.id);
+                   movePiece(event.target.id);
                    });
            } else if (i === 0 && j === 3){ //black queen
-               cellId.innerHTML = uCode.bQueen;
+               cellId.innerHTML = _uCode.bQueen;
                cellObject.pieceType = 'queen';
                cellObject.pieceColor = 'black';
             //    cellObject.cellStatus = 'piece';
                cellId.addEventListener("click", function (event){
                    console.log(event);
-                   determinePiece(event.target.id);
+                   movePiece(event.target.id);
                    });
            } else if (i === 7 && j === 3){ //white queen
-               cellId.innerHTML = uCode.wQueen;
+               cellId.innerHTML = _uCode.wQueen;
                cellObject.pieceType = 'queen';
                cellObject.pieceColor = 'white';
             //    cellObject.cellStatus = 'piece';
                cellId.addEventListener("click", function (event){
                    console.log(event);
-                   determinePiece(event.target.id);
+                   movePiece(event.target.id);
                    });
            } else if (i > 1 && i < 6){ //blank cells
             //    cellObject.cellStatus = 'none';
                cellId.addEventListener("click", function (event){
                    console.log(event);
-                   determinePiece(event.target.id);
+                   movePiece(event.target.id);
                    });
                document.getElementById(i + '' + j).innerHTML = i + '' + j; //print cell numbers
            }
@@ -152,12 +155,22 @@ function setUp() {
 }
 setUp();
 
-function determinePiece(id){
+function movePiece(id){
    var row = parseInt(id[0]);
    var cell = parseInt(id[1]);
    var cellObject = _boardStateArray[row][cell];
    var pieceColor = cellObject.pieceColor;
    var firstMove = cellObject.firstMove;
+   if (cellObject.painted === true){ //this is the second click - move piece and update board
+       cellObject.newLocation = true;
+       updateBoard();
+   } else { //else this is a first click, set to true
+       _pieceEnRouteObject.pieceType = cellObject.pieceType; //temp store cellObject of firstClick
+       _pieceEnRouteObject.pieceColor = cellObject.pieceColor; //temp store cellObject of firstClick
+       _pieceEnRouteObject.firstMove = cellObject.firstMove; //temp store cellObject of firstClick
+       _pieceEnRouteHTML = document.getElementById(row + '' + cell).innerHTML; //temp store the innerHTML of firstClick
+       cellObject.firstClick = true;
+   }
    switch (cellObject.pieceType) {
        case 'rook':
            var myRook = new Rook(id, cellObject, _boardStateArray);
@@ -306,12 +319,14 @@ Piece.prototype.getTargets = function(direction, row, cell){ //do we want to put
         if (!this._boardStateArray[this.row][this.cell].pieceType){
             var targetCell = (this.row) + '' + (this.cell);
             this.cellsToPaint.push(targetCell);
+            this._boardStateArray[this.row][this.cell].painted = true;
             // _boardStateArray[row][cell].cellStatus = 'available';
         }else if (this._boardStateArray[this.row][this.cell] && this._boardStateArray[this.row][this.cell].pieceColor === this.pieceColor){
             break;
         }else if (this._boardStateArray[this.row][this.cell] && this._boardStateArray[this.row][this.cell].pieceColor !== this.pieceColor){
             var targetCell = (this.row) + '' + (this.cell);
             this.cellsToPaint.push(targetCell);
+            this._boardStateArray[this.row][this.cell].painted = true;
             // _boardStateArray[row][cell].cellStatus = 'available';
             potentialCapture++;
             break;
@@ -401,6 +416,7 @@ Knight.prototype.getKnightTargets = function(direction, row, cell){
     if (!this._boardStateArray[this.row][this.cell].pieceType){
         var targetCell = (this.row) + '' + (this.cell);
         this.cellsToPaint.push(targetCell);
+        this._boardStateArray[this.row][this.cell].painted = true;
         // _boardStateArray[row][cell].cellStatus = 'available';
         return;
     }else if (this._boardStateArray[this.row][this.cell] && this._boardStateArray[this.row][this.cell].pieceColor === this.pieceColor){
@@ -408,6 +424,7 @@ Knight.prototype.getKnightTargets = function(direction, row, cell){
     }else if (this._boardStateArray[this.row][this.cell] && this._boardStateArray[this.row][this.cell].pieceColor !== this.pieceColor){
         var targetCell = (this.row) + '' + (this.cell);
         this.cellsToPaint.push(targetCell);
+        this._boardStateArray[this.row][this.cell].painted = true;
         // _boardStateArray[row][cell].cellStatus = 'available';
         return;
     }
@@ -456,6 +473,7 @@ King.prototype.getKingTargets = function(direction, row, cell){
     if (!this._boardStateArray[this.row][this.cell].pieceType){
         var targetCell = (this.row) + '' + (this.cell);
         this.cellsToPaint.push(targetCell);
+        this._boardStateArray[this.row][this.cell].painted = true;
         // _boardStateArray[row][cell].cellStatus = 'available';
         return;
     }else if (this._boardStateArray[this.row][this.cell] && this._boardStateArray[this.row][this.cell].pieceColor === this.pieceColor){
@@ -463,6 +481,7 @@ King.prototype.getKingTargets = function(direction, row, cell){
     }else if (this._boardStateArray[this.row][this.cell] && this._boardStateArray[this.row][this.cell].pieceColor !== this.pieceColor){
         var targetCell = (this.row) + '' + (this.cell);
         this.cellsToPaint.push(targetCell);
+        this._boardStateArray[this.row][this.cell].painted = true;
         // _boardStateArray[row][cell].cellStatus = 'available';
         return;
     }
@@ -523,6 +542,7 @@ Pawn.prototype.getPawnTargets = function(direction, row, cell){
     if (!this._boardStateArray[this.row][this.cell].pieceType){
         var targetCell = (this.row) + '' + (this.cell);
         this.cellsToPaint.push(targetCell);
+        this._boardStateArray[this.row][this.cell].painted = true;
         // _boardStateArray[row][cell].cellStatus = 'available';
         return;
     }else if (this._boardStateArray[this.row][this.cell] && this._boardStateArray[this.row][this.cell].pieceColor === this.pieceColor){
@@ -530,21 +550,49 @@ Pawn.prototype.getPawnTargets = function(direction, row, cell){
     }else if (this._boardStateArray[this.row][this.cell] && this._boardStateArray[this.row][this.cell].pieceColor !== this.pieceColor){
         var targetCell = (this.row) + '' + (this.cell);
         this.cellsToPaint.push(targetCell);
+        this._boardStateArray[this.row][this.cell].painted = true;
         // _boardStateArray[row][cell].cellStatus = 'available';
         return;
     }
 };
 
 function paintTargets(_cellsToPaint){
-        var availableRow;
-        var availableCell;
-        var cellClassArray;
+    var availableRow;
+    var availableCell;
+    var cellId;
     for (var i=0; i < _cellsToPaint.length; i++){
         availableRow = parseInt(_cellsToPaint[i][0]);
         availableCell = parseInt(_cellsToPaint[i][1]);
-        cellClassArray = document.getElementById(_boardStateArray[availableRow][availableCell].id).className.split(' ');
-        cellClassArray.push('available-cell');
+        cellId = document.getElementById(availableRow + '' + availableCell);
+        cellId.setAttribute('class', 'available-cell');
     }
-    document.getElementById(_boardStateArray[availableRow][availableCell].id).className = cellClassArray.join(' ');
+}
+
+function updateBoard(){
+    for (var i=0; i < _boardStateArray.length; i++){
+        delete _pieceEnRouteObject.firstClick;
+        for (var j=0; j < _boardStateArray.length; j++){
+            if (_boardStateArray[i][j].firstClick === true){
+                document.getElementById(i + '' + j).innerHTML = i + '' + j; //print cell numbers - delete innerHTML of firstClick
+                delete _boardStateArray[i][j].firstClick; // delete .firstClick
+                delete _boardStateArray[i][j].pieceType; // delete .pieceType
+                delete _boardStateArray[i][j].pieceColor; // delete .pieceColor
+            }
+            if (_boardStateArray[i][j].newLocation === true){
+                document.getElementById(i + '' + j).innerHTML = _pieceEnRouteHTML; // print piece in newLocation
+                document.getElementById(i + '' + j).setAttribute('class', 'cell'); // un-paint
+                _boardStateArray[i][j] = _pieceEnRouteObject;
+                delete _boardStateArray[i][j].newLocation; // delete .newLocation
+            }
+            if (_boardStateArray[i][j].painted === true){
+                document.getElementById(i + '' + j).setAttribute('class', 'cell');
+                delete _boardStateArray[i][j].painted;
+            }
+        }
+    }
+    _cellsToPaint = [];
+    _pieceEnRouteObject = {};
+    _pieceEnRouteHTML = '';
     console.log(_boardStateArray);
+    console.log(_cellsToPaint);
 }
