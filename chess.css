@@ -62,5 +62,15 @@ a {
 }
 
 .clicked-cell{
+    position: relative;
+    float: left;
+    width: 11%;
+    height: 100%;
+    border-color: black;
+    border: .2vw;
+    border-style: solid;
+    text-align: center;
+    font-size: 4vw;
+    color: gray;
     background-color: #bddfeb;
 }
